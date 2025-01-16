@@ -8,7 +8,7 @@ import { spriteElement } from "./sprite";
 const MAX_IMAGES = 200;
 const IMAGE_SIZE_MIN = 300;
 const IMAGE_SIZE_MAX = 900;
-const LERP_AMOUNT = 0.05;
+const LERP_AMOUNT = 0.02;
 const DELTA_MAP_MIN = 0.1;
 const DELTA_MAP_MAX = 1;
 const DELTA_THRESHOLD = 1000;
@@ -109,7 +109,7 @@ const main = async () => {
 				images,
 				position.current.x / 2,
 				position.current.y / 2,
-				map(delta.lerped, 0, 1, 0.3, 0.9),
+				map(delta.lerped, 0, 1, IMAGE_SIZE_MIN, IMAGE_SIZE_MAX),
 
 				imageNum
 			);

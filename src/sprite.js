@@ -7,7 +7,8 @@ export const spriteElement = (images, x, y, scale, imagesNum) => {
 		texture: image,
 		x,
 		y,
-		scale: scale,
+		width: scale / 2,
+		height: scale / 2,
 		anchor: 0.5,
 	});
 	const updateImage = () => {
