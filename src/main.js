@@ -1,17 +1,20 @@
 import { imageElement } from "./imageElement";
 import { preloadFont, preloadImage } from "./loader";
+import { Application, Assets, Sprite } from "pixi.js";
+
 import "./style.css";
+import { spriteElement } from "./sprite";
 
 const MAX_IMAGES = 200;
 const IMAGE_SIZE_MIN = 300;
 const IMAGE_SIZE_MAX = 900;
-const LERP_AMOUNT = 0.02;
+const LERP_AMOUNT = 0.05;
 const DELTA_MAP_MIN = 0.1;
 const DELTA_MAP_MAX = 1;
 const DELTA_THRESHOLD = 1000;
 let R1 = Math.random() * 300;
 let R2 = Math.random() * 300;
-const main = () => {
+const main = async () => {
 	let context,
 		canvas,
 		image,
@@ -21,8 +24,16 @@ const main = () => {
 		interval,
 		timeoutAutomatic;
 	const imagesArray = [];
-
+	const spritesArray = [];
 	let imageNum = 0;
+
+	const app = new Application({
+		width: window.innerWidth,
+		height: window.innerHeight,
+		resolution: window.devicePixelRatio || 1,
+	});
+	await app.init({ background: "#f0f0f0", resizeTo: window });
+	document.body.appendChild(app.canvas);
 
 	const pixelRatio = window.devicePixelRatio || 1;
 	let width = window.innerWidth * pixelRatio;
@@ -45,7 +56,6 @@ const main = () => {
 
 	const preloadImages = async () => {
 		const preload = srcArray.map((src) => preloadImage(src));
-
 		return Promise.all([...preload]);
 	};
 
@@ -56,19 +66,18 @@ const main = () => {
 
 	const init = async () => {
 		images = await preloadImages();
-
 		image = images[0];
+		console.log(images);
 		font = await preloadFont("/metrabold.otf", "metrabold");
-		canvas = createCanvas();
-		context = canvas.getContext("2d");
-		charactersSize = measureEachCharacters("MARTIAL");
+
+		// Move the sprite to the center of the screen
+
 		window.addEventListener("pointerup", (ev) => {
 			updateNumImage();
 			mouseMove(ev);
 		});
 		window.addEventListener("pointermove", throttle(mouseMove, 50));
-
-		window.addEventListener("resize", onresizeHandler);
+		// window.addEventListener("resize", onresizeHandler);
 		changePositionHandler();
 		loop();
 	};
@@ -91,13 +100,32 @@ const main = () => {
 	};
 
 	const loop = () => {
-		context.clearRect(0, 0, width, height);
-		imagesArray.forEach((imgElement, index) => {
-			imgElement.loop(performance.now() + index * 20);
+		app.ticker.add((time) => {
+			if (spritesArray.length > MAX_IMAGES) {
+				app.stage.removeChild(spritesArray[0].sprite);
+				spritesArray.shift();
+			}
+			const sprite = spriteElement(
+				images,
+				position.current.x / 2,
+				position.current.y / 2,
+				map(delta.lerped, 0, 1, 0.3, 0.9),
+
+				imageNum
+			);
+			app.stage.addChild(sprite.sprite);
+			spritesArray.push(sprite);
+
+			for (let i = 0; i < spritesArray.length; i++) {
+				spritesArray[i].loop(performance.now() + i * 20);
+			}
+			updatePositionAndDelta();
+
+			// console.log(time);
+			// Just for fun, let's rotate mr rabbit a little.
+			// * Delta is 1 if running at 100% performance *
+			// * Creates frame-independent transformation *
 		});
-		updatePositionAndDelta();
-		addImageElement();
-		requestAnimationFrame(loop);
 	};
 
 	const updatePositionAndDelta = () => {
@@ -153,11 +181,6 @@ const main = () => {
 		canvas.style.height = `${window.innerHeight}px`;
 		width = window.innerWidth * pixelRatio;
 		height = window.innerHeight * pixelRatio;
-	};
-
-	const measureEachCharacters = (text) => {
-		const characters = text.split("");
-		return characters.map((character) => context.measureText(character).width);
 	};
 
 	const createCanvas = () => {
