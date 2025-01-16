@@ -1,0 +1,100 @@
+@font-face {
+	font-family: "suisse";
+	src: url("/SuisseIntl-Medium.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: "suisse-light";
+	src: url("/SuisseIntl-Light.ttf") format("truetype");
+}
+
+* {
+	box-sizing: border-box;
+	font-family: suisse;
+	text-transform: uppercase;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	background-color: #fff;
+	width: 100vw;
+	width: 100svw;
+	height: 100vh;
+	height: 100svh;
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+	position: fixed;
+}
+canvas {
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+
+#app {
+	width: 100vw;
+	width: 100svw;
+	height: 100vh;
+	height: 100svh;
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+}
+
+#container-infos {
+	width: 100%;
+	display: grid;
+	padding: 1rem;
+	grid-template-columns: repeat(3, 1fr);
+	z-index: 1;
+}
+#container-infos div {
+	width: 100%;
+	display: flex;
+}
+
+#container-infos div:nth-child(1) {
+	justify-content: flex-end;
+}
+
+#container-infos div:nth-child(2) {
+	justify-content: center;
+}
+#container-infos div:nth-child(3) {
+	justify-content: flex-start;
+}
+
+p {
+	font-size: 0.9rem;
+	color: #000;
+	padding: 0.2rem;
+	/* width: fit-content;
+	background-color: #a6a6a6;*/
+}
+
+/* make p difference color with canvas */
+#container-infos p:nth-child(1) {
+	color: #ff0000;
+}
+
+@media screen and (orientation: portrait) {
+	#container-infos div:nth-child(1) {
+		justify-content: flex-start;
+	}
+
+	#container-infos div:nth-child(2) {
+		justify-content: center;
+	}
+	#container-infos div:nth-child(3) {
+		justify-content: flex-end;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	p {
+		font-size: 0.7rem;
+	}
+}
