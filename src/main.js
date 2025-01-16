@@ -71,6 +71,9 @@ const main = async () => {
 		font = await preloadFont("/metrabold.otf", "metrabold");
 
 		// Move the sprite to the center of the screen
+		setInterval(() => {
+			updateNumImage();
+		}, 10000);
 
 		window.addEventListener("pointerup", (ev) => {
 			updateNumImage();
